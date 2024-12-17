@@ -1,32 +1,12 @@
-# This workflow will build a Java project with Brachyra
-# For more information see: docs/development/brachyura.md
-
-name: Java CI with Gradle
-
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: false
-
-      - name: Run build with Gradle Wrapper
-        run: ./gradlew build
-
-      - name: Upload built JAR (Spigot)
-        uses: actions/upload-artifact@v3
-        with:
-          name: skript-anvilgui-artifacts
-          path: build/libs
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-java@v4
+    with:
+      java-version: '17'
+      distribution: 'temurin'
+  - run: mvn --batch-mode --update-snapshots verify
+  - run: mkdir staging && cp target/*.jar staging
+  - uses: actions/upload-artifact@v4
+    with:
+      name: Package
+      path: staging
